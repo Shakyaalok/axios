@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="style.css">
+    <title>Registration Page post Request Using axios</title>
+</head>
+
+<body>
+
+    <div class="container">
+
+
+        <div>
+            <!-- here SubmitForm(e) will not work only give the argument as an event -->
+            <form action="" onsubmit="SubmitForm(event)">
+                <h2> Registration <span>
+                    Form</span></h2>
+                <label for="fname">First:</label>
+                <input type="text" id="fname" name="fname" placeholder="Example ...Alok">
+                <label for="lname">Last:</label>
+                <input type="text" id="lname" name="lname" placeholder="Example ...Shakya">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" placeholder="demo@gmail.com">
+                <label for="pass">Password:</label>
+                <input type="password" id="pass" name="Password" placeholder="demo123@">
+                <label for="mob">Mobile:</label>
+                <input type="number" id="mob" name="Mobile" placeholder="1234567890">
+
+                <input type="submit" id="submit">
+                <!-- <input type="submit" id="submit" onsubmit="SubmitForm(e)">  onsubmit is used on form not on submit button -->
+
+            </form>
+
+
+            <div id="res"></div>
+        </div>
+    </div>
+
+
+
+    <!-- axios cdn link -->
+    <!-- save the data to the crudcrud using axios and crucrud
+    steps:
+    1. cdn link of axios
+    2. put the crudcrud link in the axios and it returns promise so handle it
+    3.now check the network call if it working or not
+ -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
+    <script>
+        function SubmitForm(e) {
+            e.preventDefault();
+            // getting the target
+            var fname = document.getElementById('fname').value;
+            var lname = document.getElementById('lname').value;
+            var email = document.getElementById('email').value;
+            var password = document.getElementById('pass').value;
+            var moblie = document.getElementById('mob').value;
+
+
+
+
+            // create the object for details
+            let newUser = {
+                fname: fname,
+                lname: lname,
+                email: email,
+                password: password,
+                moblie: moblie
+            };
+
+
+
+
+            axios.post('https://crudcrud.com/api/1381736db81e486390835e0cdcc54fb6/Details', newUser)
+                .then((response) => {
+                    showOutput(response.data)
+                    console.log(object)
+                })
+                .catch((err) => console.log(err))
+
+
+
+
+
+
+
+            // confirmation
+            alert('Your Information is successfully sent!');
+
+
+            // clear all the field after getting the values from fields
+            e.target.reset();
+        }
+
+
+        // retrieve the data when browsers load and show the output while browser loads
+        window.addEventListener('DOMContentLoaded', () => {
+            axios.get('https://crudcrud.com/api/1381736db81e486390835e0cdcc54fb6/Details')
+                .then((response) => {
+                    for (var i = 0; i < response.data.length; i++) {
+                        showOutput(response.data[i]);
+                    }
+
+                    console.log(response)
+                })
+                .catch((err) => console.log(err))
+        })
+
+
+        // Show output in browser
+        function showOutput(newUser) {
+            const resElement = document.getElementById('res');
+            const userElement = document.createElement('div');
+            userElement.innerHTML = `
+      <div class="card-body">
+        <ul>
+          <li>First Name: ${newUser.fname}</li>
+          <li>Last Name: ${newUser.lname}</li>
+          <li>Email: ${newUser.email}</li>
+          <li>Mobile: ${newUser.mobile}</li>
+          <li>Password: ${newUser.password}</li>
+     
+          <li><button class='btn-del'onclick="deleteUser('${newUser._id}')">Delete</button></li>
+
+        </ul>
+      </div>
+    `;
+            resElement.appendChild(userElement);
+        }
+    </script>
+</body>
+
+</html>
+
+<!-- <li>Delete: ${DeleteUser}</li> it was mine -->
