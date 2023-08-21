@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Pr_App_me</title>
+</head>
+
+<body>
+
+    <form action="">
+        <div class="container">
+            <h2>Admin panel</h2>
+            <div>
+
+
+                <label for="sp">Selling price</label>
+                <input type="text" id="sp" name="Selling_Price" placeholder="Enter selling price">
+            </div>
+            <div>
+                <label for="last">Product Name</label>
+                <input type="text" id="pn" name="Product_Name" placeholder="Enter product name">
+            </div>
+            <div>
+                <label for="category">Choose a category:</label>
+                <select id="category" name="category">
+                    <option value="Electronics">Electronics</option>
+                    <option value="Skin Care">Skincare</option>
+                    <option value="Food Items">Fooditems</option>
+                  
+                </select>
+            </div>
+
+            <!-- this will not work these functions will work on form not on button for button we have to add event listerner to the button -->
+            <!-- <button type="button" onclick="SubmitForm(e)" id="btn">Submit</button> -->
+            <button type="button" id="btn" class="btn">Add Product</button>
+            <!-- <button type="button" class="btn btn2">Get Data</button> -->
+
+
+        </div>
+
+
+        <!-- new empty element added to show the output -->
+
+        <div id="show">
+            <h1>Products</h1>
+            <div id="Skin Care" class="category-section">
+                <h3>SkinCare</h3>
+            </div>
+            <div id="Electronics" class="category-section">
+                <h3>Electronics</h3>
+            </div>
+            <div id="Food Items" class="category-section">
+                <h3>FoodItems</h3>
+            </div>
+        </div>
+    </form>
+
+
+
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
+    <script>
+        var addproduct = document.getElementById('btn');
+        addproduct.addEventListener('click', AddProdcut);
+
+
+
+        function AddProdcut() {
+            // console.log(1);
+
+            // target the items
+            var productPrice = document.getElementById('sp').value;
+            var productName = document.getElementById('pn').value;
+            var productCategory = document.getElementById('category').value
+
+            // making the objects of the product
+            var products = {
+                productPrice: productPrice,
+                productName: productName,
+                productCategory: productCategory
+            }
+
+            // console.log(products)
+
+
+
+            // POST
+            axios.post('https://crudcrud.com/api/955705b52d5f460593a822a5d76eafa1/Details', products)
+                .then((response) => {
+                    show(response.data)
+                    console.log(response.data)
+                })
+                .catch((err) => console.log('Product cannot be added'))
+        }
+
+        // get the data
+        window.addEventListener('DOMContentLoaded', () => {
+            axios.get('https://crudcrud.com/api/955705b52d5f460593a822a5d76eafa1/Details')
+                .then((response) => {
+                    for (const item of response.data) {
+                        show(item)
+                    }
+                })
+                .catch((err) => console.log(err))
+        })
+
+
+
+
+
+        // Delete
+        function Delete(productid) {
+            axios.delete(`https://crudcrud.com/api/955705b52d5f460593a822a5d76eafa1/Details/${productid}`)
+                .then((response) => {
+                    // alert(`Product delete successfully!`)
+                    // after delete referesh the page
+                    refresh();
+                    // getData();
+                })
+                .catch((err) => {
+                    console.log('Cannot be deleted!')
+                })
+        }
+
+
+        // refresh the page
+        function refresh() {
+            var ExistingEmptyElement = document.getElementById('show');
+
+            ExistingEmptyElement.innerHTML = '';
+
+            axios.get('https://crudcrud.com/api/955705b52d5f460593a822a5d76eafa1/Details')
+                .then((response) => {
+                    for (const item of response.data) {
+                        show(item)
+                    }
+                })
+                .catch((err) => console.log(err))
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        // show the product to the browser
+
+        function show(products) {
+            var categoryName = products.productCategory;
+            var categorySection = document.getElementById(categoryName);
+
+            if (categorySection) {
+                var productElement = document.createElement('div');
+                productElement.className = 'card';
+                productElement.innerHTML = `
+            <ul>
+                <li>Price: ${products.productPrice}</li>
+                <li>Name: ${products.productName}</li>
+                <li>Category: ${products.productCategory}</li>
+                <li><button type="button" class="btn" onclick='Delete("${products._id}")'>Delete ${products.productName}</button></li>
+            </ul>
+        `;
+
+                categorySection.appendChild(productElement);
+            } else {
+                console.log(`Category section not found for ${categoryName}`);
+            }
+        }
+
+
+
+
+
+
+
+        // function show(products) {
+        //     var ExistingEmptyElement = document.getElementById('show');
+        //     var AddedElement = document.createElement('div');
+        //     AddedElement.innerHTML = `
+        // <div class='card'>
+        //     <ul>
+        //         <li>Price:${products.productPrice}</li>
+        //         <li>Name:${products.productName}</li>
+        //         <li>Category:${products.productCategory}</li>
+        //         <li><button type="button"  class="btn" onclick='Delete("${products._id}")'>Delete${" "}${products.productName}</button></li>
+
+        //     </ul>
+        //     </div>
+        // `
+        //     ExistingEmptyElement.appendChild(AddedElement)
+        // }
+    </script>
+
+</body>
+
+</html>
